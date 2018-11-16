@@ -2,6 +2,7 @@ package com.corp.detective.database.entities;
 
 import com.corp.detective.database.MainDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -11,35 +12,42 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import java.util.List;
 
 @Table(database = MainDatabase.class)
-public class Game extends BaseModel {
+public class Character extends BaseModel {
     @PrimaryKey(autoincrement = true)
-    @Column int id;
+    @Column
+    int id;
     @Column String name;
     @Column String description;
+    @Column int gameId;
     @Column String imgUrl;
-    List<Character> characterList;
+    List<Skill> skillList;
 
-    public Game() {
+    @Column
+    @ForeignKey(tableClass = Game.class)
+    Game game;
+
+    public Character() {
 
     }
 
-    public Game(int id, String name, String description, String imgUrl) {
+    public Character(int id, String name, String description, String imgUrl, int gameId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.imgUrl = imgUrl;
+        this.gameId = gameId;
     }
-    public static List<Game> getAll(){
-        return SQLite.select().from(Game.class).queryList();
+    public static List<Character> getAll(){
+        return SQLite.select().from(Character.class).queryList();
     }
 
-    public List<Character> getCharacterList(){
-        if(characterList == null || characterList.isEmpty()){
-            characterList = new Select().from(Character.class)
-                    .where(Character_Table.gameId.eq(id))
+    public List<Skill> getSkillList(){
+        if(skillList == null || skillList.isEmpty()){
+            skillList = new Select().from(Skill.class)
+                    .where(Skill_Table.characterId.eq(id))
                     .queryList();
         }
-        return characterList;
+        return skillList;
     }
     public int getId() {
         return id;
@@ -71,7 +79,17 @@ public class Game extends BaseModel {
 
     public void setImgUrl(String imgUrl) { this.imgUrl = imgUrl; }
 
-    public static Game getGameById(int id){
-        return SQLite.select().from(Game.class).where(Game_Table.id.eq(id)).querySingle();
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) { this.gameId = gameId; }
+
+    public Game getGame() { return game; }
+
+    public void setGame(Game game) { this.game = game; }
+
+    public static Character getCharacterById(int id){
+        return SQLite.select().from(Character.class).where(Character_Table.id.eq(id)).querySingle();
     }
 }
