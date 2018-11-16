@@ -21,7 +21,7 @@ public class Skill {
     @Column String imgUrl;
 
     @Column
-    @ForeignKey(tableClass = Game.class)
+    @ForeignKey(tableClass = Character.class)
     Character character;
 
     public Skill() {
@@ -79,7 +79,7 @@ public class Skill {
 
     public void setCharacter(Character character) { this.character = character; }
 
-    public static Skill getCharacterById(int id){
+    public static Skill getSkillById(int id){
         return SQLite.select().from(Skill.class).where(Skill_Table.id.eq(id)).querySingle();
     }
 }
