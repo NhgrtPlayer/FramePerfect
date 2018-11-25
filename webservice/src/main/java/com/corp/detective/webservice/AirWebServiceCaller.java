@@ -23,7 +23,7 @@ public class AirWebServiceCaller {
     Retrofit retrofit;
     // base URL of the web service
     //TODO: Change base URL
-    private final String baseUrl = "https://github.com/NhgrtPlayer/FramePerfect/tree/master/database/php/";
+    private final String baseUrl = "http://10.24.6.179/";
 
     // constructor
     public AirWebServiceCaller(AirWebServiceHandler airWebServiceHandler){
