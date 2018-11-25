@@ -75,7 +75,7 @@ public class WsDataLoader extends DataLoader {
     };
 
     private void checkDataArrival(){
-        if(gamesArrived && charactersArrived){
+        if(gamesArrived && charactersArrived && movesArrived){
             mDataLoadedListener.onDataLoaded((ArrayList<Game>) Game.getAll(), (ArrayList<Character>) Character.getAll(), (ArrayList<Move>) Move.getAll());
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.corp.detective.database.data.MockData;
 import com.corp.detective.database.entities.Character;
 import com.corp.detective.database.entities.Game;
+import com.corp.detective.database.entities.Move;
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -53,6 +54,24 @@ public class MainDatabase {
         String[] listItems = new String[games.size()];
         for(int i = 0; i < games.size(); i++){
             listItems[i] = games.get(i).getName();
+        }
+
+        return listItems;
+    }
+
+    public static String[] getMoves()
+    {
+        if(SQLite.select().from(Move.class).queryList().isEmpty()){
+            MockData.writeAll();
+        }
+
+        List<Move> moves =
+                SQLite.select().from(Move.class).queryList();
+
+        //convert to array of strings
+        String[] listItems = new String[moves.size()];
+        for(int i = 0; i < moves.size(); i++){
+            listItems[i] = moves.get(i).getName();
         }
 
         return listItems;

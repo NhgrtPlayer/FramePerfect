@@ -41,7 +41,7 @@ public class CharacterDetailsFragment extends Fragment {
 
     private void showCharacterDetails() {
         // TODO: Make character details
-        /*Bundle data = this.getArguments();
+        Bundle data = this.getArguments();
         int characterId = data.getInt("id", -1);
 
         if(characterId != -1){
@@ -49,12 +49,6 @@ public class CharacterDetailsFragment extends Fragment {
 
             txtName.setText(character.getName());
             txtDescription.setText(character.getDescription());
-
-            // import java.text.SimpleDateFormat;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-            txtStartDate.setText(sdf.format(character.getStartDate()));
-            txtEndDate.setText(" -- " + sdf.format(character.getEndDate()));
-        }*/
+        }
     }
 }
