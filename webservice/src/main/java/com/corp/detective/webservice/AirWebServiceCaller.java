@@ -23,7 +23,7 @@ public class AirWebServiceCaller {
     Retrofit retrofit;
     // base URL of the web service
     //TODO: Change base URL
-    private final String baseUrl = "http://cortex.foi.hr/mtl/courses/air/";
+    private final String baseUrl = "https://github.com/NhgrtPlayer/FramePerfect/tree/master/database/php/";
 
     // constructor
     public AirWebServiceCaller(AirWebServiceHandler airWebServiceHandler){
