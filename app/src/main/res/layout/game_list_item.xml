@@ -11,9 +11,9 @@
     android:focusable="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
         android:layout_margin="5dp">
 
         <ImageView
@@ -23,26 +23,33 @@
             android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/game_image"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="5dp">
 
-        <TextView
-            android:id="@+id/game_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="5dp"
-            android:textIsSelectable="false"
-            tools:text="Game name string"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+            <TextView
+                android:id="@+id/game_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:textIsSelectable="false"
+                tools:text="Game name string"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
-        <TextView
-            android:id="@+id/game_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="5dp"
-            android:textIsSelectable="false"
-            tools:text="Game description, characters etc"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Info"/>
+            <TextView
+                android:id="@+id/game_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:textIsSelectable="false"
+                tools:text="Game description, characters etc"
+                android:textAppearance="@style/TextAppearance.Compat.Notification.Info"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 

@@ -11,10 +11,9 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import java.util.List;
 
 @Table(database = MainDatabase.class)
-public class Skill {
+public class Move {
     @PrimaryKey(autoincrement = true)
-    @Column
-    int id;
+    @Column int id;
     @Column String name;
     @Column String description;
     @Column int characterId;
@@ -24,19 +23,19 @@ public class Skill {
     @ForeignKey(tableClass = Character.class)
     Character character;
 
-    public Skill() {
+    public Move() {
 
     }
 
-    public Skill(int id, String name, String description, String imgUrl, int characterId) {
+    public Move(int id, String name, String description, String imgUrl, int characterId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.imgUrl = imgUrl;
         this.characterId = characterId;
     }
-    public static List<Skill> getAll(){
-        return SQLite.select().from(Skill.class).queryList();
+    public static List<Move> getAll(){
+        return SQLite.select().from(Move.class).queryList();
     }
 
     public int getId() {
@@ -79,7 +78,7 @@ public class Skill {
 
     public void setCharacter(Character character) { this.character = character; }
 
-    public static Skill getSkillById(int id){
-        return SQLite.select().from(Skill.class).where(Skill_Table.id.eq(id)).querySingle();
+    public static Move getMoveById(int id){
+        return SQLite.select().from(Move.class).where(Move_Table.id.eq(id)).querySingle();
     }
 }

@@ -14,13 +14,12 @@ import java.util.List;
 @Table(database = MainDatabase.class)
 public class Character extends BaseModel {
     @PrimaryKey(autoincrement = true)
-    @Column
-    int id;
+    @Column int id;
     @Column String name;
     @Column String description;
     @Column int gameId;
     @Column String imgUrl;
-    List<Skill> skillList;
+    List<Move> MoveList;
 
     @Column
     @ForeignKey(tableClass = Game.class)
@@ -41,13 +40,13 @@ public class Character extends BaseModel {
         return SQLite.select().from(Character.class).queryList();
     }
 
-    public List<Skill> getSkillList(){
-        if(skillList == null || skillList.isEmpty()){
-            skillList = new Select().from(Skill.class)
-                    .where(Skill_Table.characterId.eq(id))
+    public List<Move> getMoveList(){
+        if(MoveList == null || MoveList.isEmpty()){
+            MoveList = new Select().from(Move.class)
+                    .where(Move_Table.characterId.eq(id))
                     .queryList();
         }
-        return skillList;
+        return MoveList;
     }
     public int getId() {
         return id;

@@ -2,14 +2,14 @@ package com.corp.detective.core;
 
 import com.corp.detective.database.entities.Character;
 import com.corp.detective.database.entities.Game;
-import com.corp.detective.database.entities.Skill;
+import com.corp.detective.database.entities.Move;
 
 import java.util.ArrayList;
 
 public class DataLoader {
     public ArrayList<Game> games;
     public ArrayList<Character> characters;
-    public ArrayList<Skill> skills;
+    public ArrayList<Move> moves;
 
     protected DataLoadedListener mDataLoadedListener;
 
