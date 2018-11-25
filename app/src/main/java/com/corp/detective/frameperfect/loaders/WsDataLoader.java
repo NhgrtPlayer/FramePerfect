@@ -14,6 +14,7 @@ import java.util.List;
 public class WsDataLoader extends DataLoader {
     private boolean gamesArrived = false;
     private boolean charactersArrived = false;
+    private boolean movesArrived = false;
 
     @Override
     public void loadData(DataLoadedListener dataLoadedListener) {
@@ -21,9 +22,11 @@ public class WsDataLoader extends DataLoader {
 
         AirWebServiceCaller gamesWs = new AirWebServiceCaller(gamesHandler);
         AirWebServiceCaller charactersWs = new AirWebServiceCaller(charactersHandler);
+        AirWebServiceCaller movesWs = new AirWebServiceCaller(movesHandler);
 
         gamesWs.getAll("getAll", Game.class);
         charactersWs.getAll("getAll", Character.class);
+        movesWs.getAll("getAll", Character.class);
 
     }
 
@@ -52,6 +55,20 @@ public class WsDataLoader extends DataLoader {
                     character.save();
                 }
                 charactersArrived = true;
+                checkDataArrival();
+            }
+        }
+    };
+
+    AirWebServiceHandler movesHandler = new AirWebServiceHandler() {
+        @Override
+        public void onDataArrived(Object result, boolean ok, long timestamp) {
+            if(ok){
+                List<Move> moves = (List<Move>) result;
+                for(Move move : moves){
+                    move.save();
+                }
+                movesArrived = true;
                 checkDataArrival();
             }
         }

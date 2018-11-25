@@ -46,10 +46,12 @@ public class AirWebServiceCaller {
         Call<AirWebServiceResponse> call = null;
 
         AirWebService serviceCaller = retrofit.create(AirWebService.class);
-        if(entityType == Game.class){
+        if (entityType == Game.class){
             call = serviceCaller.getGames(method);
-        } else if(entityType == Character.class){
+        } else if (entityType == Character.class){
             call = serviceCaller.getCharacters(method);
+        } else if (entityType == Move.class){
+            call = serviceCaller.getMoves(method);
         }
 
         if(call != null){
