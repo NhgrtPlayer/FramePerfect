@@ -11,9 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TableLayout;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -26,44 +26,79 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLoc
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class MoveActivity extends Activity {
+public class MainActivity extends Activity {
 
     private MobileServiceClient mClient;
-    private MobileServiceTable<MoveItem> mMovesTable;
-    private MoveItemAdapter mAdapter;
-    private String mCharacterId;
-    private ProgressBar mProgressBar;
+    private MobileServiceTable<AccountItem> mAccountsTable;
+    private List<AccountItem> mAccounts;
 
-    public MoveActivity() {
-    }
+    private Button loginButton, createAccountButton;
+    private EditText ed1,ed2;
 
-    public MoveActivity(MobileServiceClient client, String gameId) {
-        mClient = client;
-        mCharacterId = gameId;
-    }
+    int counter = 3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_moves);
+        setContentView(R.layout.activity_main);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.loadingMovesProgressBar);
-        mProgressBar.setVisibility(ProgressBar.GONE);
+        loginButton = (Button) findViewById(R.id.login_button);
+        createAccountButton = (Button) findViewById(R.id.create_account_button);
+        ed1 = (EditText) findViewById(R.id.name_textbox);
+        ed2 = (EditText) findViewById(R.id.password_textbox);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!checkLogin(ed1.getText().toString(), ed2.getText().toString())) {
+                    counter--;
+                    if (counter == 0) {
+                        createAndShowDialog("Wrong credentials for too much time, exiting", "Error");
+                        finishAndRemoveTask();
+                    }
+                    createAndShowDialog("Wrong credentials", "Error");
+                }
+                else {
+                    openGameActivity();
+                }
+            }
+        });
+        createAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ed1.getText().toString().isEmpty() || ed2.getText().toString().isEmpty()) {
+                    createAndShowDialog("Empty credentials", "Error");
+                    return;
+                }
+                AccountItem newAccount = new AccountItem();
+                newAccount.setName(ed1.getText().toString());
+                newAccount.setPassword(ed2.getText().toString());
+                try {
+                    Log.d("Création de compte", "NOM : " + newAccount.getName());
+                    Log.d("Création de compte", "PWD : " + newAccount.getPassword());
+                    addItem(v, newAccount);
+                    refreshItemsFromTable();
+                }
+                catch (Exception e) {
+                    createAndShowDialog(e, "Error");
+                    return;
+                }
+                createAndShowDialog("Account successfully created", "Success");
+            }
+        });
+
         try {
-            // Create the Mobile Service Client instance, using the provided
-
-            // Mobile Service URL and key
             mClient = new MobileServiceClient(
                     "https://frameperfect.azurewebsites.net",
-                    this).withFilter(new ProgressFilter(mProgressBar));;
+                    this);
 
-            // Extend timeout from default of 10s to 20s
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
                 @Override
                 public OkHttpClient createOkHttpClient() {
@@ -73,68 +108,59 @@ public class MoveActivity extends Activity {
                     return client;
                 }
             });
-            mMovesTable = mClient.getTable(MoveItem.class);
-            mCharacterId = getIntent().getExtras().getString("characterId");
 
-            // Offline Sync
-            //mToDoTable = mClient.getSyncTable("ToDoItem", ToDoItem.class);
+            mAccountsTable = mClient.getTable("Accounts", AccountItem.class);
 
-            //Init local storage
-            initLocalStore().get();
-
-            // Create an adapter to bind the items with the view
-            mAdapter = new MoveItemAdapter(this, R.layout.row_list_move);
-            final ListView listViewToDo = (ListView) findViewById(R.id.listViewMove);
-            listViewToDo.setAdapter(mAdapter);
-
-            // Load the items from the Mobile Service
             refreshItemsFromTable();
 
-
-            listViewToDo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> arg, View view,
-                                        int position, long id) {
-                    openMoveDetailsActivity((MoveItem) listViewToDo.getItemAtPosition(position));
-                }
-            });
+        } catch (MalformedURLException e) {
+            createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
         } catch (Exception e){
             createAndShowDialog(e, "Error");
         }
-        Log.d("OnCreateAfter", "END OF ONCREATE, NO ERRORS ???");
     }
 
-    private void openMoveDetailsActivity(MoveItem moveItem) {
-        Intent intent = new Intent(this, MoveDetailsActivity.class);
-        intent.putExtra("moveItem", moveItem);
+    private void openGameActivity() {
+        Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
+    }
+
+    private boolean checkLogin(final String name, final String password) {
+        Log.d("checkLogin", "Coucou");
+        refreshItemsFromTable();
+        if (mAccounts == null) {
+            Log.d("checkLogin", "Pardon?");
+            return (false);
+        }
+        for (int i=0; i<mAccounts.size(); i++) {
+            Log.d("checkLogin", "i : " + i);
+            Log.d("checkLogin", "MY NOM : " + name);
+            Log.d("checkLogin", "MY PWD : " + password);
+            Log.d("checkLogin", "NOM : " + mAccounts.get(i).getName());
+            Log.d("checkLogin", "PWD : " + mAccounts.get(i).getPassword());
+            if (name.equals(mAccounts.get(i).getName()) && password.equals(mAccounts.get(i).getPassword())) {
+                return (true);
+            }
+        }
+        return (false);
     }
 
     private void refreshItemsFromTable() {
         Log.d("refreshItemsFromTable", "REFRESHING...");
+
+        // Get the items that weren't marked as completed and add them in the
+        // adapter
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
 
                 try {
-                    final List<MoveItem> results = refreshItemsFromMobileServiceTable();
-                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
+                    mAccounts = refreshItemsFromMobileServiceTable();
+                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + mAccounts.size()));
 
                     //Offline Sync
                     //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.clear();
-
-                            for (MoveItem item : results) {
-                                mAdapter.add(item);
-                                Log.d("refreshItemsFromTable", "ITEM ADDED");
-                            }
-                        }
-                    });
                 } catch (final Exception e){
                     createAndShowDialogFromTask(e, "Error");
                 }
@@ -146,13 +172,37 @@ public class MoveActivity extends Activity {
         runAsyncTask(task);
     }
 
-    private List<MoveItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
-        Log.d("REFRESH TABLE", "MY GAME ID : " + mCharacterId);
-        return mMovesTable
+    private List<AccountItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
+        return mAccountsTable
                 .where()
-                .field("characterId").eq(mCharacterId)
-                .orderBy("name", QueryOrder.Ascending)
                 .execute().get();
+    }
+
+    public void addItem(View view, final AccountItem item) {
+        if (mClient == null) {
+            return;
+        }
+
+        // Insert the new item
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    final AccountItem entity = addItemInTable(item);
+
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task);
+    }
+
+    public AccountItem addItemInTable(AccountItem item) throws ExecutionException, InterruptedException {
+        AccountItem entity = mAccountsTable.insert(item).get();
+        return entity;
     }
 
     @Override
@@ -215,21 +265,14 @@ public class MoveActivity extends Activity {
                     if (syncContext.isInitialized())
                         return null;
 
-                    SQLiteLocalStore localStore = new SQLiteLocalStore(mClient.getContext(), "OfflineMoves", null, 1);
+                    SQLiteLocalStore localStore = new SQLiteLocalStore(mClient.getContext(), "OfflineAccounts", null, 1);
 
                     Map<String, ColumnDataType> tableDefinition = new HashMap<String, ColumnDataType>();
                     tableDefinition.put("id", ColumnDataType.String);
                     tableDefinition.put("name", ColumnDataType.String);
-                    tableDefinition.put("characterID", ColumnDataType.String);
-                    tableDefinition.put("moveType", ColumnDataType.String);
-                    tableDefinition.put("damage", ColumnDataType.String);
-                    tableDefinition.put("startUp", ColumnDataType.String);
-                    tableDefinition.put("active", ColumnDataType.String);
-                    tableDefinition.put("recovery", ColumnDataType.String);
-                    tableDefinition.put("frameAdvantage", ColumnDataType.String);
-                    tableDefinition.put("guard", ColumnDataType.String);
+                    tableDefinition.put("password", ColumnDataType.String);
 
-                    localStore.defineTable("MoveItem", tableDefinition);
+                    localStore.defineTable("Accounts", tableDefinition);
 
                     SimpleSyncHandler handler = new SimpleSyncHandler();
 

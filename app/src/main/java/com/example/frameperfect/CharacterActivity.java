@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -37,6 +38,7 @@ public class CharacterActivity extends Activity {
     private MobileServiceTable<CharacterItem> mCharactersTable;
     private CharacterItemAdapter mAdapter;
     private String mGameId;
+    private ProgressBar mProgressBar;
 
     public CharacterActivity() {
     }
@@ -51,13 +53,16 @@ public class CharacterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_characters);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.loadingCharactersProgressBar);
+        mProgressBar.setVisibility(ProgressBar.GONE);
+
         try {
             // Create the Mobile Service Client instance, using the provided
 
             // Mobile Service URL and key
             mClient = new MobileServiceClient(
                     "https://frameperfect.azurewebsites.net",
-                    this);
+                    this).withFilter(new ProgressFilter(mProgressBar));
 
             // Extend timeout from default of 10s to 20s
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {

@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 class GameItemAdapter extends ArrayAdapter<GameItem> {
 
@@ -45,6 +48,23 @@ class GameItemAdapter extends ArrayAdapter<GameItem> {
         row.setTag(currentItem);
         final TextView gameNameTextView = (TextView) row.findViewById(R.id.game_name);
         gameNameTextView.setText(currentItem.getName());
+
+        ImageView image = (ImageView) row.findViewById(R.id.game_image);
+
+        if (currentItem.getImgUrl().matches(".*[a-zA-Z].*")) {
+            Picasso.with(this.getContext())
+                    .load(currentItem.getImgUrl())
+                    .centerCrop()
+                    .fit()
+                    .into(image);
+        }
+        else {
+            Picasso.with(this.getContext())
+                    .load(android.R.drawable.ic_menu_gallery)
+                    .centerCrop()
+                    .fit()
+                    .into(image);
+        }
 
         Log.d("getView GameItemAdapter", "ROW CREATED");
 

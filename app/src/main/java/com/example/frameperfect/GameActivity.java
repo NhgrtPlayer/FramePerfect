@@ -12,14 +12,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.DateTimeOffset;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.Query;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOperations;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
+import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncTable;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
@@ -33,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 public class GameActivity extends Activity {
 
@@ -58,6 +72,11 @@ public class GameActivity extends Activity {
     private GameItemAdapter mAdapter;
 
     /**
+     * Progress spinner to use for table operations
+     */
+    private ProgressBar mProgressBar;
+
+    /**
      * Initializes the activity
      */
     @Override
@@ -65,13 +84,18 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.loadingGamesProgressBar);
+
+        // Initialize the progress bar
+        mProgressBar.setVisibility(ProgressBar.GONE);
+
         try {
             // Create the Mobile Service Client instance, using the provided
 
             // Mobile Service URL and key
             mClient = new MobileServiceClient(
                     "https://frameperfect.azurewebsites.net",
-                    this);
+                    this).withFilter(new ProgressFilter(mProgressBar));
 
             // Extend timeout from default of 10s to 20s
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
@@ -85,11 +109,10 @@ public class GameActivity extends Activity {
             });
 
             // Get the Mobile Service Table instance to use
-
             mGamesTable = mClient.getTable(GameItem.class);
 
             // Offline Sync
-            //mToDoTable = mClient.getSyncTable("ToDoItem", ToDoItem.class);
+            //mGamesTable = mClient.getSyncTable(GameItem.class);
 
             //Init local storage
             initLocalStore().get();
@@ -141,10 +164,10 @@ public class GameActivity extends Activity {
 
                 try {
                     final List<GameItem> results = refreshItemsFromMobileServiceTable();
-                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     //Offline Sync
-                    //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    //final List<GameItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -176,6 +199,17 @@ public class GameActivity extends Activity {
                 .orderBy("name", QueryOrder.Ascending)
                 .execute().get();
     }
+
+    //Offline Sync
+    /**
+     * Refresh the list with the items in the Mobile Service Sync Table
+     */
+    /*private List<GameItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
+        //sync the data
+        sync().get();
+        //Query query = QueryOperations.field("complete").eq(val(false));
+        return mGamesTable.read(null).get();
+    }*/
 
     /**
      * Add a new item
@@ -328,6 +362,7 @@ public class GameActivity extends Activity {
                     Map<String, ColumnDataType> tableDefinition = new HashMap<String, ColumnDataType>();
                     tableDefinition.put("id", ColumnDataType.String);
                     tableDefinition.put("name", ColumnDataType.String);
+                    tableDefinition.put("imgUrl", ColumnDataType.String);
 
                     localStore.defineTable("GameItem", tableDefinition);
 
@@ -345,4 +380,26 @@ public class GameActivity extends Activity {
 
         return runAsyncTask(task);
     }
+
+    //Offline Sync
+    /**
+     * Sync the current context and the Mobile Service Sync Table
+     * @return
+     */
+    /*private AsyncTask<Void, Void, Void> sync() {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
+                    syncContext.push().get();
+                    mGamesTable.pull(null).get();
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
+        return runAsyncTask(task);
+    }*/
 }

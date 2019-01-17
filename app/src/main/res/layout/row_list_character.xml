@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/character_image"
-        android:layout_width="65dp"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:contentDescription="Image of the game"
@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/character_name"
-        android:layout_width="320dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:text="Character Name"
         android:textAlignment="textStart"

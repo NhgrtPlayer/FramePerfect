@@ -40,19 +40,11 @@ public class MoveItemAdapter extends ArrayAdapter<MoveItem> {
         row.setTag(currentItem);
 
         final TextView moveNameTextView = (TextView) row.findViewById(R.id.move_name);
-        final TextView moveDamageTextView = (TextView) row.findViewById(R.id.move_damage);
-        final TextView moveStartUpTextView = (TextView) row.findViewById(R.id.move_startup);
-        final TextView moveActiveTextView = (TextView) row.findViewById(R.id.move_active);
-        final TextView moveRecoveryTextView = (TextView) row.findViewById(R.id.move_recovery);
-        final TextView moveFrameAdvTextView = (TextView) row.findViewById(R.id.move_frameadvantage);
-        final TextView moveGuardTextView = (TextView) row.findViewById(R.id.move_guard);
-        moveNameTextView.setText(currentItem.getCommand());
-        moveDamageTextView.setText(currentItem.getDamage());
-        moveStartUpTextView.setText(currentItem.getStartUp());
-        moveActiveTextView.setText(currentItem.getActive());
-        moveRecoveryTextView.setText(currentItem.getRecovery());
-        moveFrameAdvTextView.setText(currentItem.getFrameAdvantage());
-        moveGuardTextView.setText(currentItem.getGuard());
+        String moveName = currentItem.getName();
+        if (moveName.length() > 25) {
+            moveName = (moveName.substring(0, 21) + "...");
+        }
+        moveNameTextView.setText(moveName);
 
         Log.d("getView MoveItemAdapter", "TABLE ROW CREATED");
 

@@ -1,12 +1,7 @@
 package com.example.frameperfect;
 
-import com.microsoft.windowsazure.mobileservices.table.DateTimeOffset;
+public class AccountItem {
 
-public class GameItem {
-
-    /**
-     * Item Id
-     */
     @com.google.gson.annotations.SerializedName("id")
     private String mId;
     public String getId() {
@@ -16,9 +11,6 @@ public class GameItem {
         mId = id;
     }
 
-    /**
-     * Item text
-     */
     @com.google.gson.annotations.SerializedName("name")
     private String mName;
     public String getName() {
@@ -28,23 +20,20 @@ public class GameItem {
         mName = name;
     }
 
-    @com.google.gson.annotations.SerializedName("imgUrl")
-    private String mImgUrl;
-    public String getImgUrl() {
-        return mImgUrl;
+    @com.google.gson.annotations.SerializedName("password")
+    private String mPassword;
+    public String getPassword() {
+        return mPassword;
     }
-    public final void setImgUrl(String imgUrl) {
-        mImgUrl = imgUrl;
+    public final void setPassword(String password) {
+        mPassword = password;
     }
 
-    /**
-     * GameItem constructor
-     */
-    public GameItem() {
+    public AccountItem() {
 
     }
 
-    public GameItem(String id, String name) {
+    public AccountItem(String id, String name) {
         this.setId(id);
         this.setName(name);
     }
@@ -56,6 +45,6 @@ public class GameItem {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof GameItem && ((GameItem) o).mId == mId;
+        return o instanceof AccountItem && ((AccountItem) o).mId == mId;
     }
 }
