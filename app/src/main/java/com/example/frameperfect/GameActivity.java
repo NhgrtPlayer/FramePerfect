@@ -58,13 +58,13 @@ public class GameActivity extends Activity {
     /**
      * Mobile Service Table used to access data
      */
-    private MobileServiceTable<GameItem> mGamesTable;
+    //private MobileServiceTable<GameItem> mGamesTable;
 
     //Offline Sync
     /**
      * Mobile Service Table used to access and Sync data
      */
-    //private MobileServiceSyncTable<GameItem> mGamesTable;
+    private MobileServiceSyncTable<GameItem> mGamesTable;
 
     /**
      * Adapter to sync the items list with the view
@@ -109,10 +109,10 @@ public class GameActivity extends Activity {
             });
 
             // Get the Mobile Service Table instance to use
-            mGamesTable = mClient.getTable(GameItem.class);
+            //mGamesTable = mClient.getTable(GameItem.class);
 
             // Offline Sync
-            //mGamesTable = mClient.getSyncTable(GameItem.class);
+            mGamesTable = mClient.getSyncTable(GameItem.class);
 
             //Init local storage
             initLocalStore().get();
@@ -163,10 +163,10 @@ public class GameActivity extends Activity {
             protected Void doInBackground(Void... params) {
 
                 try {
-                    final List<GameItem> results = refreshItemsFromMobileServiceTable();
+                    //final List<GameItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    //final List<GameItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<GameItem> results = refreshItemsFromMobileServiceTableSyncTable();
                     Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
@@ -194,22 +194,22 @@ public class GameActivity extends Activity {
     /**
      * Refresh the list with the items in the Mobile Service Table
      */
-    private List<GameItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
+    /*private List<GameItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
         return mGamesTable
                 .orderBy("name", QueryOrder.Ascending)
                 .execute().get();
-    }
+    }*/
 
     //Offline Sync
     /**
      * Refresh the list with the items in the Mobile Service Sync Table
      */
-    /*private List<GameItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
+    private List<GameItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
         //sync the data
         sync().get();
-        //Query query = QueryOperations.field("complete").eq(val(false));
+        //Query query = QueryOperations.field("*");
         return mGamesTable.read(null).get();
-    }*/
+    }
 
     /**
      * Add a new item
@@ -386,7 +386,7 @@ public class GameActivity extends Activity {
      * Sync the current context and the Mobile Service Sync Table
      * @return
      */
-    /*private AsyncTask<Void, Void, Void> sync() {
+    private AsyncTask<Void, Void, Void> sync() {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
@@ -401,5 +401,5 @@ public class GameActivity extends Activity {
             }
         };
         return runAsyncTask(task);
-    }*/
+    }
 }

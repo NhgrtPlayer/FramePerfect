@@ -77,6 +77,14 @@ public class MainActivity extends Activity {
                     createAndShowDialog("Empty credentials", "Error");
                     return;
                 }
+                refreshItemsFromTable();
+
+                for (int i=0; i<mAccounts.size(); i++) {
+                    if (ed1.getText().toString().equals(mAccounts.get(i).getName())) {
+                        createAndShowDialog("Account already exists", "Error");
+                        return;
+                    }
+                }
                 AccountItem newAccount = new AccountItem();
                 newAccount.setName(ed1.getText().toString());
                 newAccount.setPassword(ed2.getText().toString());
@@ -84,7 +92,6 @@ public class MainActivity extends Activity {
                     Log.d("Création de compte", "NOM : " + newAccount.getName());
                     Log.d("Création de compte", "PWD : " + newAccount.getPassword());
                     addItem(v, newAccount);
-                    refreshItemsFromTable();
                 }
                 catch (Exception e) {
                     createAndShowDialog(e, "Error");

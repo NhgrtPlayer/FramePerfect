@@ -17,8 +17,11 @@ import android.widget.ProgressBar;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.Query;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOperations;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
+import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncTable;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
@@ -35,7 +38,8 @@ import java.util.concurrent.TimeUnit;
 public class CharacterActivity extends Activity {
 
     private MobileServiceClient mClient;
-    private MobileServiceTable<CharacterItem> mCharactersTable;
+    //private MobileServiceTable<CharacterItem> mCharactersTable;
+    private MobileServiceSyncTable<CharacterItem> mCharactersTable;
     private CharacterItemAdapter mAdapter;
     private String mGameId;
     private ProgressBar mProgressBar;
@@ -74,7 +78,8 @@ public class CharacterActivity extends Activity {
                     return client;
                 }
             });
-            mCharactersTable = mClient.getTable(CharacterItem.class);
+            //mCharactersTable = mClient.getTable(CharacterItem.class);
+            mCharactersTable = mClient.getSyncTable(CharacterItem.class);
             mGameId = getIntent().getExtras().getString("gameId");
 
             // Offline Sync
@@ -124,11 +129,11 @@ public class CharacterActivity extends Activity {
             protected Void doInBackground(Void... params) {
 
                 try {
-                    final List<CharacterItem> results = refreshItemsFromMobileServiceTable();
-                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
+                    //final List<CharacterItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<CharacterItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -152,13 +157,19 @@ public class CharacterActivity extends Activity {
         runAsyncTask(task);
     }
 
-    private List<CharacterItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
+    /*private List<CharacterItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
         Log.d("REFRESH TABLE", "MY GAME ID : " + mGameId);
         return mCharactersTable
                 .where()
                 .field("gameId").eq(mGameId)
                 .orderBy("name", QueryOrder.Ascending)
                 .execute().get();
+    }*/
+    private List<CharacterItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
+        //sync the data
+        sync().get();
+        Query query = QueryOperations.field("gameId").eq(mGameId);
+        return mCharactersTable.read(query).get();
     }
 
     @Override
@@ -246,4 +257,21 @@ public class CharacterActivity extends Activity {
         return runAsyncTask(task);
     }
 
+    private AsyncTask<Void, Void, Void> sync() {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
+                    syncContext.push().get();
+                    Query query = QueryOperations.field("gameId").eq(mGameId);
+                    mCharactersTable.pull(query).get();
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
+        return runAsyncTask(task);
+    }
 }

@@ -18,8 +18,11 @@ import android.widget.TableLayout;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.Query;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOperations;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
+import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncTable;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
@@ -35,7 +38,8 @@ import java.util.concurrent.TimeUnit;
 public class MoveActivity extends Activity {
 
     private MobileServiceClient mClient;
-    private MobileServiceTable<MoveItem> mMovesTable;
+    //private MobileServiceTable<MoveItem> mMovesTable;
+    private MobileServiceSyncTable<MoveItem> mMovesTable;
     private MoveItemAdapter mAdapter;
     private String mCharacterId;
     private ProgressBar mProgressBar;
@@ -73,11 +77,11 @@ public class MoveActivity extends Activity {
                     return client;
                 }
             });
-            mMovesTable = mClient.getTable(MoveItem.class);
+            //mMovesTable = mClient.getTable(MoveItem.class);
             mCharacterId = getIntent().getExtras().getString("characterId");
 
             // Offline Sync
-            //mToDoTable = mClient.getSyncTable("ToDoItem", ToDoItem.class);
+            mMovesTable = mClient.getSyncTable(MoveItem.class);
 
             //Init local storage
             initLocalStore().get();
@@ -118,11 +122,11 @@ public class MoveActivity extends Activity {
             protected Void doInBackground(Void... params) {
 
                 try {
-                    final List<MoveItem> results = refreshItemsFromMobileServiceTable();
-                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
+                    //final List<MoveItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<MoveItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -146,13 +150,19 @@ public class MoveActivity extends Activity {
         runAsyncTask(task);
     }
 
-    private List<MoveItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
+    /*private List<MoveItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
         Log.d("REFRESH TABLE", "MY GAME ID : " + mCharacterId);
         return mMovesTable
                 .where()
                 .field("characterId").eq(mCharacterId)
                 .orderBy("name", QueryOrder.Ascending)
                 .execute().get();
+    }*/
+    private List<MoveItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
+        //sync the data
+        sync().get();
+        Query query = QueryOperations.field("characterId").eq(mCharacterId);
+        return mMovesTable.read(query).get();
     }
 
     @Override
@@ -220,7 +230,7 @@ public class MoveActivity extends Activity {
                     Map<String, ColumnDataType> tableDefinition = new HashMap<String, ColumnDataType>();
                     tableDefinition.put("id", ColumnDataType.String);
                     tableDefinition.put("name", ColumnDataType.String);
-                    tableDefinition.put("characterID", ColumnDataType.String);
+                    tableDefinition.put("characterId", ColumnDataType.String);
                     tableDefinition.put("moveType", ColumnDataType.String);
                     tableDefinition.put("damage", ColumnDataType.String);
                     tableDefinition.put("startUp", ColumnDataType.String);
@@ -243,6 +253,24 @@ public class MoveActivity extends Activity {
             }
         };
 
+        return runAsyncTask(task);
+    }
+
+    private AsyncTask<Void, Void, Void> sync() {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
+                    syncContext.push().get();
+                    Query query = QueryOperations.field("characterId").eq(mCharacterId);
+                    mMovesTable.pull(query).get();
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
         return runAsyncTask(task);
     }
 
