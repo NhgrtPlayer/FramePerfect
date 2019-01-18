@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -40,8 +41,9 @@ public class MainActivity extends Activity {
     private MobileServiceTable<AccountItem> mAccountsTable;
     private List<AccountItem> mAccounts;
 
-    private Button loginButton, createAccountButton;
+    private Button loginButton, createAccountButton, offlineButton;
     private EditText ed1,ed2;
+    private ProgressBar mProgressBar;
 
     int counter = 3;
 
@@ -52,8 +54,11 @@ public class MainActivity extends Activity {
 
         loginButton = (Button) findViewById(R.id.login_button);
         createAccountButton = (Button) findViewById(R.id.create_account_button);
+        offlineButton = (Button) findViewById(R.id.offline_button);
         ed1 = (EditText) findViewById(R.id.name_textbox);
         ed2 = (EditText) findViewById(R.id.password_textbox);
+        mProgressBar = (ProgressBar) findViewById(R.id.loadingAccountsProgressBar);
+        mProgressBar.setVisibility(ProgressBar.GONE);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,10 +106,17 @@ public class MainActivity extends Activity {
             }
         });
 
+        offlineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGameActivity();
+            }
+        });
+
         try {
             mClient = new MobileServiceClient(
                     "https://frameperfect.azurewebsites.net",
-                    this);
+                    this).withFilter(new ProgressFilter(mProgressBar));
 
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
                 @Override

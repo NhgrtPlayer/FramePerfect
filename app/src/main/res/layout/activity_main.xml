@@ -4,6 +4,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/loadingAccountsProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <EditText
         android:id="@+id/name_textbox"
         android:layout_width="match_parent"
@@ -30,4 +36,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Account" />
+
+    <Button
+        android:id="@+id/offline_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Offline Mode" />
 </LinearLayout>
