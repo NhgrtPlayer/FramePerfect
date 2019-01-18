@@ -39,7 +39,13 @@ public class ProgressFilter extends Activity implements ServiceFilter {
         Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
             @Override
             public void onFailure(Throwable e) {
-                mProgressBar.setVisibility(ProgressBar.GONE);
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.GONE);
+                    }
+                });
                 resultFuture.setException(e);
             }
 
