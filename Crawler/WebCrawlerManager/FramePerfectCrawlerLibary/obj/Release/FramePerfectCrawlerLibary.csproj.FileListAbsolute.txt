@@ -1,0 +1,10 @@
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\obj\Release\FramePerfectCrawlerLibary.csprojAssemblyReference.cache
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\obj\Release\FramePerfectCrawlerLibary.csproj.CoreCompileInputs.cache
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\bin\Release\FramePerfectCrawlerLibary.dll
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\bin\Release\FramePerfectCrawlerLibary.pdb
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\bin\Release\HtmlAgilityPack.dll
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\bin\Release\HtmlAgilityPack.pdb
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\bin\Release\HtmlAgilityPack.xml
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\obj\Release\FramePerfectCrawlerLibary.csproj.CopyComplete
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\obj\Release\FramePerfectCrawlerLibary.dll
+C:\Users\Bellay\source\repos\WebCrawlerManager\FramePerfectCrawlerLibary\obj\Release\FramePerfectCrawlerLibary.pdb
