@@ -6,5 +6,6 @@
     <string name="service_title">Mobile Apps </string>
     <string name="menu_refresh">Refresh</string>
     <string name="checkbox_text">Item Text</string>
+    <string name="diem">10</string>
 
 </resources>
