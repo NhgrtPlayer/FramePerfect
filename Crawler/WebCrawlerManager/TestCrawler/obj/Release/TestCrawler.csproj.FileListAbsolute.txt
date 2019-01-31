@@ -1,0 +1,15 @@
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\TestCrawler.exe.config
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\TestCrawler.exe
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\TestCrawler.pdb
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\HtmlAgilityPack.dll
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\Microsoft.QualityTools.Testing.Fakes.dll
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\HtmlAgilityPack.pdb
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\HtmlAgilityPack.xml
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\obj\Release\TestCrawler.csprojAssemblyReference.cache
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\obj\Release\TestCrawler.csproj.CoreCompileInputs.cache
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\obj\Release\TestCrawler.csproj.CopyComplete
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\obj\Release\TestCrawler.exe
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\obj\Release\TestCrawler.pdb
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\FramePerfectCrawlerLibary.dll
+C:\Users\Bellay\source\repos\TestCrawler\TestCrawler\bin\Release\FramePerfectCrawlerLibary.pdb

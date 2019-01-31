@@ -1,0 +1,9 @@
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\bin\Release\netstandard2.0\FramePerfectCrawler.deps.json
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\bin\Release\netstandard2.0\FramePerfectCrawler.dll
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\bin\Release\netstandard2.0\FramePerfectCrawler.pdb
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.csproj.CoreCompileInputs.cache
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.AssemblyInfoInputs.cache
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.AssemblyInfo.cs
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.dll
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.pdb
+C:\Users\Bellay\source\repos\WebCrawlerManager\ClassLibrary1\obj\Release\netstandard2.0\FramePerfectCrawler.csprojAssemblyReference.cache
