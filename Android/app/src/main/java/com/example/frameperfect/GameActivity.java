@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,10 +40,12 @@ import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSy
 import com.squareup.okhttp.OkHttpClient;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -77,12 +80,19 @@ public class GameActivity extends Activity {
     private ProgressBar mProgressBar;
 
     /**
+     * EditText containing the "Game Name" text
+     */
+    private EditText mTextGameSearch;
+    private String mSearchString;
+
+    /**
      * Initializes the activity
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
+        mSearchString = "";
 
         mProgressBar = (ProgressBar) findViewById(R.id.loadingGamesProgressBar);
 
@@ -131,6 +141,8 @@ public class GameActivity extends Activity {
                 }
             });
 
+            mTextGameSearch = (EditText) findViewById(R.id.textGameSearch);
+
             // Load the items from the Mobile Service
             refreshItemsFromTable();
 
@@ -166,7 +178,7 @@ public class GameActivity extends Activity {
                     //final List<GameItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    final List<GameItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<GameItem> results = sortItemsWithSearch(refreshItemsFromMobileServiceTableSyncTable());
                     Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
@@ -209,6 +221,28 @@ public class GameActivity extends Activity {
         sync().get();
         //Query query = QueryOperations.field("*");
         return mGamesTable.read(null).get();
+    }
+
+    public List<GameItem> sortItemsWithSearch(final List<GameItem> items) {
+        List<GameItem> toReturn = new ArrayList<GameItem>();
+
+        for (GameItem item : items) {
+            if (item.getName().toLowerCase().contains(mSearchString)) {
+                toReturn.add(item);
+            }
+        }
+
+        return (toReturn);
+    }
+
+    public void searchItems(View view) {
+        if (mTextGameSearch != null) {
+            mSearchString = mTextGameSearch.getText().toString();
+        }
+        else {
+            mSearchString = "";
+        }
+        refreshItemsFromTable();
     }
 
     /**

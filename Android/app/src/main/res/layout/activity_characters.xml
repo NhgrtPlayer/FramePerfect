@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#71BCFA"
+        android:padding="6dip">
+
+        <EditText
+            android:id="@+id/textCharacterSearch"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Character Name"
+            android:inputType="text">
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/buttonCharacterSearch"
+            android:layout_width="82dip"
+            android:layout_height="wrap_content"
+            android:onClick="searchItems"
+            android:text="Search" />
+
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/loadingCharactersProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
