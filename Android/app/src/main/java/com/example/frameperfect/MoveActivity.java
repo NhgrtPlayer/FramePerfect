@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -29,6 +30,7 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLoc
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,8 @@ public class MoveActivity extends Activity {
     private MoveItemAdapter mAdapter;
     private String mCharacterId;
     private ProgressBar mProgressBar;
+    private EditText mTextMoveSearch;
+    private String mSearchString;
 
     public MoveActivity() {
     }
@@ -59,6 +63,9 @@ public class MoveActivity extends Activity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.loadingMovesProgressBar);
         mProgressBar.setVisibility(ProgressBar.GONE);
+        mTextMoveSearch = (EditText) findViewById(R.id.textMoveSearch);
+        mSearchString = "";
+
         try {
             // Create the Mobile Service Client instance, using the provided
 
@@ -125,7 +132,7 @@ public class MoveActivity extends Activity {
                     //final List<MoveItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    final List<MoveItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<MoveItem> results = sortItemsWithSearch(refreshItemsFromMobileServiceTableSyncTable());
                     Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
@@ -163,6 +170,28 @@ public class MoveActivity extends Activity {
         sync().get();
         Query query = QueryOperations.field("characterId").eq(mCharacterId);
         return mMovesTable.read(query).get();
+    }
+
+    public List<MoveItem> sortItemsWithSearch(final List<MoveItem> items) {
+        List<MoveItem> toReturn = new ArrayList<MoveItem>();
+
+        for (MoveItem item : items) {
+            if (item.getName().toLowerCase().contains(mSearchString)) {
+                toReturn.add(item);
+            }
+        }
+
+        return (toReturn);
+    }
+
+    public void searchItems(View view) {
+        if (mTextMoveSearch != null) {
+            mSearchString = mTextMoveSearch.getText().toString();
+        }
+        else {
+            mSearchString = "";
+        }
+        refreshItemsFromTable();
     }
 
     @Override

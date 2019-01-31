@@ -3,13 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#71BCFA"
+        android:padding="6dip">
+
+        <EditText
+            android:id="@+id/textGameSearch"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Game Name"
+            android:inputType="text">
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/buttonGameSearch"
+            android:layout_width="82dip"
+            android:layout_height="wrap_content"
+            android:onClick="searchItems"
+            android:text="Search" />
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/loadingGamesProgressBar"
-        style="?android:attr/progressBarStyle"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
     <ListView
         android:id="@+id/listViewGame"

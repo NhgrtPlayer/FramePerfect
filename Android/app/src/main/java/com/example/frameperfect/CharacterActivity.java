@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -29,6 +30,7 @@ import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSy
 import com.squareup.okhttp.OkHttpClient;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,8 @@ public class CharacterActivity extends Activity {
     private CharacterItemAdapter mAdapter;
     private String mGameId;
     private ProgressBar mProgressBar;
+    private EditText mTextCharacterSearch;
+    private String mSearchString;
 
     public CharacterActivity() {
     }
@@ -59,6 +63,8 @@ public class CharacterActivity extends Activity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.loadingCharactersProgressBar);
         mProgressBar.setVisibility(ProgressBar.GONE);
+        mTextCharacterSearch = (EditText) findViewById(R.id.textCharacterSearch);
+        mSearchString = "";
 
         try {
             // Create the Mobile Service Client instance, using the provided
@@ -132,7 +138,7 @@ public class CharacterActivity extends Activity {
                     //final List<CharacterItem> results = refreshItemsFromMobileServiceTable();
 
                     //Offline Sync
-                    final List<CharacterItem> results = refreshItemsFromMobileServiceTableSyncTable();
+                    final List<CharacterItem> results = sortItemsWithSearch(refreshItemsFromMobileServiceTableSyncTable());
                     Log.d("refreshItemsFromTable", ("SIZE OF RESULT : " + results.size()));
 
                     runOnUiThread(new Runnable() {
@@ -170,6 +176,28 @@ public class CharacterActivity extends Activity {
         sync().get();
         Query query = QueryOperations.field("gameId").eq(mGameId);
         return mCharactersTable.read(query).get();
+    }
+
+    public List<CharacterItem> sortItemsWithSearch(final List<CharacterItem> items) {
+        List<CharacterItem> toReturn = new ArrayList<CharacterItem>();
+
+        for (CharacterItem item : items) {
+            if (item.getName().toLowerCase().contains(mSearchString)) {
+                toReturn.add(item);
+            }
+        }
+
+        return (toReturn);
+    }
+
+    public void searchItems(View view) {
+        if (mTextCharacterSearch != null) {
+            mSearchString = mTextCharacterSearch.getText().toString();
+        }
+        else {
+            mSearchString = "";
+        }
+        refreshItemsFromTable();
     }
 
     @Override

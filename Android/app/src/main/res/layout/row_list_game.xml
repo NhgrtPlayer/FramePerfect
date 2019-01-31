@@ -25,6 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Game Name"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
         <TextView
